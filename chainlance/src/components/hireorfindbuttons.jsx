@@ -1,23 +1,37 @@
 import React from "react";
-import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { useWallet } from "./walletcontext";
 
 const HireFindBtn = () => {
+  const navigate = useNavigate();
+  const { walletAddress } = useWallet();
+
+  const handleProtectedRoute = (event, path) => {
+    if (!walletAddress) {
+      event.preventDefault();
+      alert("Please connect your wallet first!");
+    } else {
+      navigate(path); // Cüzdan bağlıysa yönlendirme işlemi yapılır
+    }
+  };
+
   return (
     <div className="flex h-screen">
-      <a
-        href="/find-job" 
+      <button
+        onClick={(e) => handleProtectedRoute(e, "/find-job")}
         className="flex-1 flex items-center justify-center bg-gray-900 text-white text-4xl font-bold transition-all duration-300 hover:bg-gray-950"
+        disabled={!walletAddress} // Cüzdan bağlı değilse buton devre dışı
       >
         Find Job
-      </a>
+      </button>
 
-      <a
-        href="/hire-someone" 
+      <button
+        onClick={(e) => handleProtectedRoute(e, "/hire-someone")}
         className="flex-1 flex items-center justify-center bg-gray-900 text-white text-4xl font-bold transition-all duration-300 hover:bg-gray-950"
+        disabled={!walletAddress} // Cüzdan bağlı değilse buton devre dışı
       >
         Hire Someone
-      </a>
+      </button>
     </div>
   );
 };
